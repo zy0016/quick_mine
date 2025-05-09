@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>LcdTimer.qml</file>
+        <file>LcdMine.qml</file>
+        <file>s1.png</file>
+        <file>samegame.js</file>
+        <file>redmine.png</file>
+        <file>blackmine.png</file>
+        <file>flag.png</file>
+        <file>interrogation.png</file>
+        <file>t1.png</file>
+        <file>t2.png</file>
+        <file>t3.png</file>
+        <file>t4.png</file>
+        <file>t5.png</file>
+        <file>t6.png</file>
+        <file>t7.png</file>
+        <file>t8.png</file>
+        <file>t0.png</file>
+        <file>s2.png</file>
+    </qresource>
+</RCC>
