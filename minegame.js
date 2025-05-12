@@ -308,6 +308,7 @@ function initChessman(level) {
         if ((!sChessmine[i][iMineCol].bMineType) && !ifexist) {
             sChessmine[i][iMineCol].setMinetype(true);
             sChessmine[i][iMineCol].setMinenum(-1);
+            console.log(i + " " + iMineCol + " set mine" + iMinenum);
             i++;
             iMinenum++;
         }
@@ -316,10 +317,11 @@ function initChessman(level) {
         i = Math.floor((Math.random()*chessnum));
         j = Math.floor((Math.random()*chessnum));
         var elemenet = sChessmine[i][j];
-        if (!elemenet.bMineType){
-            sChessmine[i][iMineCol].setMinetype(true);
-            sChessmine[i][iMineCol].setMinenum(-1);
+        if (!elemenet.bMineType && elemenet.iMineNum !== -1){
+            sChessmine[i][j].setMinetype(true);
+            sChessmine[i][j].setMinenum(-1);
             iMinenum++;
+            console.log(i + " " + j + " set mine" + iMinenum);
         }
     }
     console.log("iMinenum:" + iMinenum);
@@ -440,15 +442,15 @@ function initChessman(level) {
         }
     }
 
-    /*console.log("========start===========")
+    console.log("========start===========")
     var sk = "";
     for (i = 0;i < RowCount;i++){
         sk = "";
         for (j = 0;j < ColCount;j++){
-            sk = sk + sChessmine[i][j].eGridType + " "
+            sk = sk + sChessmine[j][i].iMineNum + "\t"
         }
         console.log(sk);
-    }*/
+    }
     bChessInited = true;
     return sChessmine;
 }

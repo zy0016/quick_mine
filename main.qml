@@ -3,8 +3,7 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.12
 import QtQuick.Dialogs 1.2
-import "samegame.js" as MineGame
-//import "LcdNumber.qml" as LcdNumber
+import "minegame.js" as MineGame
 
 ApplicationWindow   {
     id: root
@@ -13,6 +12,22 @@ ApplicationWindow   {
     height: 450
     title: qsTr("mine")
     property int initTime: 0
+
+    // 在 QML 中监听 C++ 类的信号
+    Component.onCompleted: {
+        myClass.messageChanged.connect(onMessageChanged);
+    }
+    // 处理信号的槽
+    function onMessageChanged(message) {
+        // 输出 JSON 格式的消息
+        console.log("Received JSON message:", message);
+        console.log("Time:", message.timer);
+        timename.text = message.timer;
+        //console.log("Timestamp:", message.timestamp);
+        //console.log("Message:", message.message);
+    }
+
+
 
     Rectangle {
         id:myrect
@@ -43,6 +58,8 @@ ApplicationWindow   {
                 top:parent.top}
 
             onClicked: {
+                console.log("newGameButton click!");
+                //myClass.startTimer();
                 /*var gl = MineGame.getChessLevel();
                 switch (gl)
                 {
@@ -105,6 +122,8 @@ ApplicationWindow   {
                     timename.text = initTime
                 }
             }
+
+
         Canvas {
             id: maincanvas
             x:0
@@ -202,7 +221,8 @@ ApplicationWindow   {
                     }
                     //MineGame.beginMine();
                     console.log("timer_1.start!!!mouse.button:" + mouse.button);
-                    timer_1.start();
+                    //timer_1.start();
+                    myClass.startTimer();
                     if (mouse.button === Qt.LeftButton)
                     {
                         var bminetype = sChessmine[irow][icol].getMinetype();
@@ -213,7 +233,8 @@ ApplicationWindow   {
                             sChessmine[irow][icol].setGridtype(4);
                             MineGame.setGamedefeat(true);
                             MineGame.setGameResult(1);
-                            timer_1.stop();
+                            //timer_1.stop();
+                            myClass.stopTimer();
                             messageDialogFail.open();
                             newGameButton.icon.source = "qrc:/s2.png"
                         }
@@ -233,7 +254,8 @@ ApplicationWindow   {
                             {
                                MineGame.setGameResult(0);
                                messageDialogSuccess.open();
-                               timer_1.stop();
+                               //timer_1.stop();
+                               myClass.stopTimer();
                             }
                         }
                     }
@@ -249,7 +271,8 @@ ApplicationWindow   {
                             {
                                 MineGame.setGameResult(0);
                                 messageDialogSuccess.open();
-                                timer_1.stop();
+                                //timer_1.stop();
+                                myClass.stopTimer();
                             }
                         }
                         else if (sChessmine[irow][icol].eGridType === 1)
@@ -386,7 +409,7 @@ ApplicationWindow   {
                                 ctx.beginPath();
                                 ctx.rect(sChessmine[i][j].x + 1,sChessmine[i][j].y + 1,bw - 1,bh - 1);
                                 ctx.fill();
-                                console.log("i:"+i+" j:"+j+" eGridType is normal");
+                                //console.log("i:"+i+" j:"+j+" eGridType is normal");
                                 break;
                             case 1://flag
                                 ctx.fillStyle = "grey";
@@ -394,7 +417,7 @@ ApplicationWindow   {
                                 ctx.rect(sChessmine[i][j].x,sChessmine[i][j].y,bw - 1,bh - 1);
                                 ctx.fill();
                                 ctx.drawImage(imageflag,sChessmine[i][j].x + (bw - iPicWidth) / 2,sChessmine[i][j].y + (bh - iPicHeight) / 2);
-                                console.log("i:"+i+" j:"+j+" eGridType is flag");
+                                //console.log("i:"+i+" j:"+j+" eGridType is flag");
                                 break;
                             case 2://interrogation
                                 ctx.fillStyle = "grey";
@@ -402,7 +425,7 @@ ApplicationWindow   {
                                 ctx.rect(sChessmine[i][j].x,sChessmine[i][j].y,bw - 1,bh - 1);
                                 ctx.fill();
                                 ctx.drawImage(imageinterrogation,sChessmine[i][j].x + (bw - iPicWidth) / 2,sChessmine[i][j].y + (bh - iPicHeight) / 2);
-                                console.log("i:"+i+" j:"+j+" eGridType is interrogation");
+                                //console.log("i:"+i+" j:"+j+" eGridType is interrogation");
                                 break;
                             case 3://click open
                                 if (sChessmine[i][j].iMineNum !== 0)//display the number of the grid
@@ -442,7 +465,7 @@ ApplicationWindow   {
                                 }
                                 else
                                 {
-                                    console.log("i:"+i+" j:"+j+" eGridType is click open");
+                                    //console.log("i:"+i+" j:"+j+" eGridType is click open");
                                     ctx.fillStyle = "silver";
                                     ctx.beginPath();
                                     ctx.rect(sChessmine[i][j].x,sChessmine[i][j].y,bw - 1,bh - 1);
@@ -462,12 +485,15 @@ ApplicationWindow   {
     menuBar: MenuBar {
             Menu {
                 title: qsTr("&File")
-                Action { text: qsTr("&Easy")
+                Action {
+                         id:easy
+                         text: qsTr("&Easy")
                          onTriggered: {
                              width=345; height=450;lcdmine.x=280;
                              MineGame.setChessLevel(0);
                              MineGame.initChessman(0);
                              timename.text = 0;
+                             initTime = 0;
                              maincanvas.width = 360;
                              maincanvas.height = 440;
                              newGameButton.icon.source = "qrc:/s1.png";
@@ -480,6 +506,7 @@ ApplicationWindow   {
                              MineGame.setChessLevel(1);
                              MineGame.initChessman(1);
                              timename.text = 0;
+                             initTime = 0;
                              maincanvas.width = 520;
                              maincanvas.height = 590;
                              newGameButton.icon.source = "qrc:/s1.png";
@@ -491,6 +518,7 @@ ApplicationWindow   {
                          MineGame.setChessLevel(2);
                          MineGame.initChessman(2);
                          timename.text = 0;
+                         initTime = 0;
                          maincanvas.width = 650;
                          maincanvas.height = 710;
                          newGameButton.icon.source = "qrc:/s1.png";
@@ -508,7 +536,7 @@ ApplicationWindow   {
     MessageDialog {
                 id: messageDialog
                 title:qsTr("about mine")
-                icon: StandardIcon.Critical
+                icon: StandardIcon.Information
                 text: qsTr("1.0 version Copyright 03-28-2025 zhaoyong")
                 onAccepted: {
                     console.log("And of course you could only agree.")
@@ -517,8 +545,8 @@ ApplicationWindow   {
     MessageDialog {
                 id: messageDialogSuccess
                 title:qsTr("about mine")
-                icon: StandardIcon.Critical
-                text: qsTr("你赢了")
+                icon: StandardIcon.Information
+                text: qsTr("You Win!")
                 onAccepted: {
                     console.log("And of course you could only agree.")
                 }
@@ -527,7 +555,7 @@ ApplicationWindow   {
                 id: messageDialogFail
                 title:qsTr("about mine")
                 icon: StandardIcon.Critical
-                text: qsTr("你输了")
+                text: qsTr("You Lost!")
                 onAccepted: {
                     console.log("And of course you could only agree.")
                 }

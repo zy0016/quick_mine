@@ -4,7 +4,7 @@
         <file>LcdTimer.qml</file>
         <file>LcdMine.qml</file>
         <file>s1.png</file>
-        <file>samegame.js</file>
+        <file>minegame.js</file>
         <file>redmine.png</file>
         <file>blackmine.png</file>
         <file>flag.png</file>
